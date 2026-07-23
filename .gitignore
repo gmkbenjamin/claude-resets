@@ -14,3 +14,5 @@ worker/
 data/needs-review.json
 .DS_Store
 *.log
+scripts/auto-update.sh
+.auto-update.lock/
