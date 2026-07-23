@@ -1,0 +1,342 @@
+{
+  "generated": null,
+  "providers": {
+    "claude": {
+      "name": "Claude",
+      "product": "Claude Code",
+      "account": "ClaudeDevs",
+      "accountUrl": "https://x.com/ClaudeDevs",
+      "events": [
+        {
+          "id": "2044868953206612154",
+          "date": "2026-04-16T20:02:04Z",
+          "kind": "reset",
+          "scope": "all",
+          "note": "Fixed a bug where subscription rate limits weren't adjusted for long-context requests on Opus 4.7, then reset 5-hour and weekly limits.",
+          "url": "https://x.com/ClaudeDevs/status/2044868953206612154"
+        },
+        {
+          "id": "2047371123185287223",
+          "date": "2026-04-23T17:44:48Z",
+          "kind": "reset",
+          "scope": "all",
+          "note": "Published a post-mortem on three Claude Code quality regressions, fixed in v2.1.116+, and reset usage limits for all subscribers.",
+          "url": "https://x.com/ClaudeDevs/status/2047371123185287223"
+        },
+        {
+          "id": "2052064938840228237",
+          "date": "2026-05-06T16:36:21Z",
+          "kind": "policy",
+          "scope": "paid plans",
+          "note": "Doubled Claude Code's 5-hour limits on Pro, Max, Team and seat-based Enterprise, removed the peak-hours reduction, and raised Opus API limits.",
+          "url": "https://x.com/ClaudeDevs/status/2052064938840228237"
+        },
+        {
+          "id": "2055347539923308703",
+          "date": "2026-05-15T18:00:14Z",
+          "kind": "reset",
+          "scope": "all",
+          "note": "A Friday reset of everyone's 5-hour and weekly rate limits, with no incident attached.",
+          "url": "https://x.com/ClaudeDevs/status/2055347539923308703"
+        },
+        {
+          "id": "2061501787769893055",
+          "date": "2026-06-01T17:35:01Z",
+          "kind": "reset",
+          "scope": "Pro + Max",
+          "note": "Fixed an issue where some Claude Code sessions spawned excessive parallel subagents and burned usage faster than expected, then reset limits.",
+          "url": "https://x.com/ClaudeDevs/status/2061501787769893055"
+        },
+        {
+          "id": "2064464557951852643",
+          "date": "2026-06-09T21:48:01Z",
+          "kind": "reset",
+          "scope": "all",
+          "note": "Reset 5-hour and weekly rate limits for all users.",
+          "url": "https://x.com/ClaudeDevs/status/2064464557951852643"
+        },
+        {
+          "id": "2067802163498352929",
+          "date": "2026-06-19T02:50:28Z",
+          "kind": "reset",
+          "scope": "affected users",
+          "note": "About 3% of Max and Pro users hit a bug showing an incorrect weekly limit, in some cases blocking messages; limits reset for everyone affected.",
+          "url": "https://x.com/ClaudeDevs/status/2067802163498352929"
+        },
+        {
+          "id": "2068122937308426676",
+          "date": "2026-06-20T00:05:06Z",
+          "kind": "reset",
+          "scope": "all",
+          "note": "Followed up the incorrect-weekly-limit bug by resetting 5-hour and weekly usage limits for everyone, across all plans.",
+          "url": "https://x.com/ClaudeDevs/status/2068122937308426676"
+        },
+        {
+          "id": "2072429181565288665",
+          "date": "2026-07-01T21:16:35Z",
+          "kind": "reset",
+          "scope": "all",
+          "note": "Reset everyone's 5-hour and weekly rate limits once Fable 5 was ready to build with again.",
+          "url": "https://x.com/ClaudeDevs/status/2072429181565288665"
+        },
+        {
+          "id": "2072818299361263778",
+          "date": "2026-07-02T23:02:48Z",
+          "kind": "policy",
+          "scope": "API",
+          "note": "Raised Claude Platform API rate limits for all users and simplified the tiers so they no longer key off API spend.",
+          "url": "https://x.com/ClaudeDevs/status/2072818299361263778"
+        },
+        {
+          "id": "2075279141352706215",
+          "date": "2026-07-09T18:01:18Z",
+          "kind": "reset",
+          "scope": "all",
+          "note": "Reset 5-hour and weekly rate limits for all users.",
+          "url": "https://x.com/ClaudeDevs/status/2075279141352706215"
+        },
+        {
+          "id": "2077603834453770467",
+          "date": "2026-07-16T03:58:48Z",
+          "kind": "reset",
+          "scope": "all",
+          "note": "Reset 5-hour and weekly rate limits for all users.",
+          "url": "https://x.com/ClaudeDevs/status/2077603834453770467"
+        },
+        {
+          "id": "2078511173759324328",
+          "date": "2026-07-18T16:04:15Z",
+          "kind": "policy",
+          "scope": "paid plans",
+          "note": "Kept Claude Code weekly limits 50% higher through August 19 for Pro, Max, Team and seat-based Enterprise users.",
+          "url": "https://x.com/ClaudeDevs/status/2078511173759324328"
+        }
+      ]
+    },
+    "codex": {
+      "name": "Codex",
+      "product": "Codex / ChatGPT",
+      "account": "thsottiaux",
+      "accountUrl": "https://x.com/thsottiaux",
+      "note": "Event list catalogued by codex-resets.com; timestamps re-derived from each status ID.",
+      "events": [
+        {
+          "id": "1968163721034994139",
+          "date": "2025-09-17T04:02:52Z",
+          "kind": "reset",
+          "url": "https://x.com/thsottiaux/status/1968163721034994139"
+        },
+        {
+          "id": "1986166501435711936",
+          "date": "2025-11-05T20:19:29Z",
+          "kind": "reset",
+          "url": "https://x.com/thsottiaux/status/1986166501435711936"
+        },
+        {
+          "id": "1992370994028388670",
+          "date": "2025-11-22T23:13:56Z",
+          "kind": "reset",
+          "url": "https://x.com/thsottiaux/status/1992370994028388670"
+        },
+        {
+          "id": "1995988609896513743",
+          "date": "2025-12-02T22:49:02Z",
+          "kind": "reset",
+          "url": "https://x.com/thsottiaux/status/1995988609896513743"
+        },
+        {
+          "id": "2001114683047317723",
+          "date": "2025-12-17T02:18:14Z",
+          "kind": "reset",
+          "url": "https://x.com/thsottiaux/status/2001114683047317723"
+        },
+        {
+          "id": "2002137269134819610",
+          "date": "2025-12-19T22:01:37Z",
+          "kind": "reset",
+          "url": "https://x.com/thsottiaux/status/2002137269134819610"
+        },
+        {
+          "id": "2004100061933064395",
+          "date": "2025-12-25T08:01:03Z",
+          "kind": "reset",
+          "url": "https://x.com/thsottiaux/status/2004100061933064395"
+        },
+        {
+          "id": "2028649088594436225",
+          "date": "2026-03-03T01:50:07Z",
+          "kind": "reset",
+          "url": "https://x.com/thsottiaux/status/2028649088594436225"
+        },
+        {
+          "id": "2029308599835738218",
+          "date": "2026-03-04T21:30:47Z",
+          "kind": "reset",
+          "url": "https://x.com/thsottiaux/status/2029308599835738218"
+        },
+        {
+          "id": "2030474136024400173",
+          "date": "2026-03-08T02:42:13Z",
+          "kind": "reset",
+          "url": "https://x.com/thsottiaux/status/2030474136024400173"
+        },
+        {
+          "id": "2031216405266481489",
+          "date": "2026-03-10T03:51:43Z",
+          "kind": "reset",
+          "url": "https://x.com/thsottiaux/status/2031216405266481489"
+        },
+        {
+          "id": "2031605592352313567",
+          "date": "2026-03-11T05:38:13Z",
+          "kind": "reset",
+          "url": "https://x.com/thsottiaux/status/2031605592352313567"
+        },
+        {
+          "id": "2037346989244096581",
+          "date": "2026-03-27T01:52:28Z",
+          "kind": "reset",
+          "url": "https://x.com/thsottiaux/status/2037346989244096581"
+        },
+        {
+          "id": "2039248564967424483",
+          "date": "2026-04-01T07:48:39Z",
+          "kind": "reset",
+          "url": "https://x.com/thsottiaux/status/2039248564967424483"
+        },
+        {
+          "id": "2041655710346572085",
+          "date": "2026-04-07T23:13:48Z",
+          "kind": "reset",
+          "url": "https://x.com/thsottiaux/status/2041655710346572085"
+        },
+        {
+          "id": "2042299371602264319",
+          "date": "2026-04-09T17:51:28Z",
+          "kind": "reset",
+          "url": "https://x.com/thsottiaux/status/2042299371602264319"
+        },
+        {
+          "id": "2044943514832871564",
+          "date": "2026-04-17T00:58:21Z",
+          "kind": "reset",
+          "url": "https://x.com/thsottiaux/status/2044943514832871564"
+        },
+        {
+          "id": "2046367145588916687",
+          "date": "2026-04-20T23:15:21Z",
+          "kind": "reset",
+          "url": "https://x.com/thsottiaux/status/2046367145588916687"
+        },
+        {
+          "id": "2048997818673537399",
+          "date": "2026-04-28T05:28:43Z",
+          "kind": "reset",
+          "url": "https://x.com/thsottiaux/status/2048997818673537399"
+        },
+        {
+          "id": "2055707616605835333",
+          "date": "2026-05-16T17:51:03Z",
+          "kind": "reset",
+          "url": "https://x.com/thsottiaux/status/2055707616605835333"
+        },
+        {
+          "id": "2058280452851638313",
+          "date": "2026-05-23T20:14:35Z",
+          "kind": "reset",
+          "url": "https://x.com/thsottiaux/status/2058280452851638313"
+        },
+        {
+          "id": "2061106703446450392",
+          "date": "2026-05-31T15:25:06Z",
+          "kind": "reset",
+          "url": "https://x.com/thsottiaux/status/2061106703446450392"
+        },
+        {
+          "id": "2062329981548802523",
+          "date": "2026-06-04T00:25:58Z",
+          "kind": "reset",
+          "url": "https://x.com/thsottiaux/status/2062329981548802523"
+        },
+        {
+          "id": "2067399435009622521",
+          "date": "2026-06-18T00:10:10Z",
+          "kind": "reset",
+          "url": "https://x.com/thsottiaux/status/2067399435009622521"
+        },
+        {
+          "id": "2070653282440405046",
+          "date": "2026-06-26T23:39:48Z",
+          "kind": "reset",
+          "url": "https://x.com/thsottiaux/status/2070653282440405046"
+        },
+        {
+          "id": "2071381664853319742",
+          "date": "2026-06-28T23:54:07Z",
+          "kind": "reset",
+          "url": "https://x.com/thsottiaux/status/2071381664853319742"
+        },
+        {
+          "id": "2071740419030053227",
+          "date": "2026-06-29T23:39:41Z",
+          "kind": "reset",
+          "url": "https://x.com/thsottiaux/status/2071740419030053227"
+        },
+        {
+          "id": "2075330198887940337",
+          "date": "2026-07-09T21:24:11Z",
+          "kind": "reset",
+          "url": "https://x.com/thsottiaux/status/2075330198887940337"
+        },
+        {
+          "id": "2075641131002700120",
+          "date": "2026-07-10T17:59:43Z",
+          "kind": "reset",
+          "url": "https://x.com/thsottiaux/status/2075641131002700120"
+        },
+        {
+          "id": "2075820987833274448",
+          "date": "2026-07-11T05:54:25Z",
+          "kind": "reset",
+          "url": "https://x.com/thsottiaux/status/2075820987833274448"
+        },
+        {
+          "id": "2076418567143408112",
+          "date": "2026-07-12T21:28:59Z",
+          "kind": "reset",
+          "url": "https://x.com/thsottiaux/status/2076418567143408112"
+        },
+        {
+          "id": "2076735790567338203",
+          "date": "2026-07-13T18:29:31Z",
+          "kind": "reset",
+          "url": "https://x.com/thsottiaux/status/2076735790567338203"
+        },
+        {
+          "id": "2077114635308986427",
+          "date": "2026-07-14T19:34:54Z",
+          "kind": "reset",
+          "url": "https://x.com/thsottiaux/status/2077114635308986427"
+        },
+        {
+          "id": "2077607697487188198",
+          "date": "2026-07-16T04:14:09Z",
+          "kind": "reset",
+          "url": "https://x.com/thsottiaux/status/2077607697487188198"
+        },
+        {
+          "id": "2078320950488297917",
+          "date": "2026-07-18T03:28:22Z",
+          "kind": "reset",
+          "url": "https://x.com/thsottiaux/status/2078320950488297917"
+        },
+        {
+          "id": "2079609157934886975",
+          "date": "2026-07-21T16:47:15Z",
+          "kind": "reset",
+          "url": "https://x.com/thsottiaux/status/2079609157934886975"
+        }
+      ]
+    }
+  }
+}

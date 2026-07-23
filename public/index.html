@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>claude-resets.com — how long since Anthropic last reset your usage limits</title>
+<meta name="description" content="A tracker for every time Anthropic has reset Claude Code's 5-hour and weekly usage limits — with a head-to-head comparison against Codex resets.">
+<link rel="canonical" href="https://claude-resets.com/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="claude-resets.com">
+<meta property="og:description" content="How long has it been since Anthropic last reset your usage limits? Plus a head-to-head against Codex.">
+<meta property="og:url" content="https://claude-resets.com/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='26' font-size='26'%3E%E2%86%BB%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <a class="wordmark" href="/">
+      <span class="glyph" aria-hidden="true">↻</span>
+      <span>claude&#8209;resets<span class="tld">.com</span></span>
+    </a>
+    <nav class="topnav">
+      <a href="#compare">Compare</a>
+      <a href="#timeline">Timeline</a>
+      <a href="#archive">Archive</a>
+      <a href="https://codex-resets.com/" rel="noopener" class="nav-out">codex&#8209;resets<span aria-hidden="true"> ↗</span></a>
+      <a href="https://github.com/gmkbenjamin/claude-resets" rel="noopener">Source<span aria-hidden="true"> ↗</span></a>
+      <div class="segmented theme-switch" id="theme-switch" role="group" aria-label="Colour theme">
+        <button type="button" data-theme-opt="dark" aria-pressed="false">Dark</button>
+        <button type="button" data-theme-opt="light" aria-pressed="false">Light</button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ── Hero ─────────────────────────────────────────────────────────── -->
+  <section class="hero">
+    <div class="wrap">
+      <p class="eyebrow">Time since Anthropic last reset everyone's usage limits</p>
+      <div class="counter" id="counter">
+        <span class="counter-loading">…</span>
+      </div>
+      <p class="hero-sub" id="hero-sub"></p>
+      <p class="hero-meta">
+        Tracking every reset announced by
+        <a id="claude-account-link" href="https://x.com/ClaudeDevs" rel="noopener">@ClaudeDevs</a>.
+        <span class="dot" aria-hidden="true">·</span>
+        Times are UTC.
+      </p>
+    </div>
+  </section>
+
+  <!-- ── Claude stat tiles ────────────────────────────────────────────── -->
+  <section class="band">
+    <div class="wrap">
+      <div class="tiles" id="claude-tiles"></div>
+    </div>
+  </section>
+
+  <!-- ── Head-to-head ─────────────────────────────────────────────────── -->
+  <section class="band" id="compare">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h2>Claude vs Codex</h2>
+          <p class="lede">
+            Two labs, two habits. Anthropic flushes Claude Code's 5-hour and weekly
+            counters; OpenAI's Codex lead does the same for Codex. Here is who
+            actually does it more often. Codex events come from the excellent
+            <a href="https://codex-resets.com/" rel="noopener">codex&#8209;resets.com</a>,
+            which this page is modelled on.
+          </p>
+        </div>
+      </div>
+
+      <div class="filterbar" role="group" aria-label="Comparison window">
+        <span class="filterbar-label">Window</span>
+        <div class="segmented" id="window-toggle">
+          <button type="button" data-window="overlap" class="is-on" aria-pressed="true">Overlap</button>
+          <button type="button" data-window="90" aria-pressed="false">Last 90 days</button>
+          <button type="button" data-window="all" aria-pressed="false">All time</button>
+        </div>
+        <p class="filterbar-note" id="window-note"></p>
+      </div>
+
+      <div class="scoreboard" id="scoreboard"></div>
+      <p class="filterbar-note sb-key">
+        <span aria-hidden="true">▲</span> marks the more generous of the two on that
+        row — more resets and a faster pace are better; every “gap” metric is better
+        when it is smaller.
+      </p>
+
+      <div class="chart-grid">
+        <figure class="card chart-card">
+          <figcaption>
+            <h3>Cumulative resets</h3>
+            <p>Running total of announced resets inside the selected window.</p>
+          </figcaption>
+          <div class="legend" id="legend-cumulative"></div>
+          <div class="plot" id="chart-cumulative"></div>
+        </figure>
+
+        <figure class="card chart-card">
+          <figcaption>
+            <h3>Resets per month</h3>
+            <p>How many times each provider flushed the counters, by calendar month.</p>
+          </figcaption>
+          <div class="legend" id="legend-monthly"></div>
+          <div class="plot" id="chart-monthly"></div>
+        </figure>
+      </div>
+
+      <details class="tableview">
+        <summary>Table view — every number on this page</summary>
+        <div class="tablescroll" id="compare-table"></div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ── Timeline ─────────────────────────────────────────────────────── -->
+  <section class="band" id="timeline">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h2>Two lanes, one clock</h2>
+          <p class="lede">
+            Every announcement on a shared time axis. Hover or focus a mark for the
+            date; click through to the original post.
+          </p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="plot" id="chart-lanes"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Archive ──────────────────────────────────────────────────────── -->
+  <section class="band" id="archive">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h2>The Claude archive</h2>
+          <p class="lede">
+            Every tracked announcement, newest first. <strong>Resets</strong> flush
+            the counters; <strong>limit changes</strong> move the ceiling without
+            flushing anything, so they are listed but never counted as resets.
+          </p>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="show-policy" checked>
+          <span>Show limit changes</span>
+        </label>
+      </div>
+      <ol class="archive" id="archive-list"></ol>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p>
+      <strong>Where the data comes from.</strong> Each entry links to the original
+      post. Every timestamp on this site is derived from the post's own X status ID
+      rather than transcribed, so the dates cannot drift from the source.
+    </p>
+    <p>
+      The Codex event list is catalogued by
+      <a href="https://codex-resets.com/" rel="noopener">codex-resets.com</a>, which
+      is also the inspiration for this page; timestamps were re-derived
+      independently. Claude entries were collected from
+      <a href="https://x.com/ClaudeDevs" rel="noopener">@ClaudeDevs</a>.
+    </p>
+    <p>
+      <strong>Open source.</strong> The site, the dataset and the build script all
+      live at
+      <a href="https://github.com/gmkbenjamin/claude-resets" rel="noopener">github.com/gmkbenjamin/claude-resets</a>
+      — spotted a reset that's missing, or one listed wrongly? Open an issue or a
+      pull request.
+    </p>
+    <p class="foot-caveat" id="foot-coverage"></p>
+    <p class="foot-caveat">
+      Not affiliated with Anthropic or OpenAI. Nothing here predicts a future
+      reset — resets are discretionary, and the only limits you can count on are
+      the ones <code>/usage</code> shows you.
+    </p>
+  </div>
+</footer>
+
+<script type="module" src="./app.js"></script>
+</body>
+</html>

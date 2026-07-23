@@ -1,0 +1,16 @@
+node_modules/
+.wrangler/
+__pycache__/
+
+# Internal only — not published.
+# scripts/build-data.py stays tracked: the public README tells people to run it
+# to regenerate public/data/resets.json.
+README.internal.md
+scripts/_classify.py
+scripts/add-reset.py
+scripts/poll-feed.py
+scripts/scrape-safari.py
+worker/
+data/needs-review.json
+.DS_Store
+*.log

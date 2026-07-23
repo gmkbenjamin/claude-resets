@@ -1,0 +1,239 @@
+{
+  "claude": {
+    "name": "Claude",
+    "product": "Claude Code",
+    "account": "ClaudeDevs",
+    "events": [
+      {
+        "id": "2044868953206612154",
+        "kind": "reset",
+        "scope": "all",
+        "note": "Fixed a bug where subscription rate limits weren't adjusted for long-context requests on Opus 4.7, then reset 5-hour and weekly limits."
+      },
+      {
+        "id": "2047371123185287223",
+        "kind": "reset",
+        "scope": "all",
+        "note": "Published a post-mortem on three Claude Code quality regressions, fixed in v2.1.116+, and reset usage limits for all subscribers."
+      },
+      {
+        "id": "2052064938840228237",
+        "kind": "policy",
+        "scope": "paid plans",
+        "note": "Doubled Claude Code's 5-hour limits on Pro, Max, Team and seat-based Enterprise, removed the peak-hours reduction, and raised Opus API limits."
+      },
+      {
+        "id": "2055347539923308703",
+        "kind": "reset",
+        "scope": "all",
+        "note": "A Friday reset of everyone's 5-hour and weekly rate limits, with no incident attached."
+      },
+      {
+        "id": "2061501787769893055",
+        "kind": "reset",
+        "scope": "Pro + Max",
+        "note": "Fixed an issue where some Claude Code sessions spawned excessive parallel subagents and burned usage faster than expected, then reset limits."
+      },
+      {
+        "id": "2064464557951852643",
+        "kind": "reset",
+        "scope": "all",
+        "note": "Reset 5-hour and weekly rate limits for all users."
+      },
+      {
+        "id": "2067802163498352929",
+        "kind": "reset",
+        "scope": "affected users",
+        "note": "About 3% of Max and Pro users hit a bug showing an incorrect weekly limit, in some cases blocking messages; limits reset for everyone affected."
+      },
+      {
+        "id": "2068122937308426676",
+        "kind": "reset",
+        "scope": "all",
+        "note": "Followed up the incorrect-weekly-limit bug by resetting 5-hour and weekly usage limits for everyone, across all plans."
+      },
+      {
+        "id": "2072429181565288665",
+        "kind": "reset",
+        "scope": "all",
+        "note": "Reset everyone's 5-hour and weekly rate limits once Fable 5 was ready to build with again."
+      },
+      {
+        "id": "2072818299361263778",
+        "kind": "policy",
+        "scope": "API",
+        "note": "Raised Claude Platform API rate limits for all users and simplified the tiers so they no longer key off API spend."
+      },
+      {
+        "id": "2075279141352706215",
+        "kind": "reset",
+        "scope": "all",
+        "note": "Reset 5-hour and weekly rate limits for all users."
+      },
+      {
+        "id": "2077603834453770467",
+        "kind": "reset",
+        "scope": "all",
+        "note": "Reset 5-hour and weekly rate limits for all users."
+      },
+      {
+        "id": "2078511173759324328",
+        "kind": "policy",
+        "scope": "paid plans",
+        "note": "Kept Claude Code weekly limits 50% higher through August 19 for Pro, Max, Team and seat-based Enterprise users."
+      }
+    ]
+  },
+  "codex": {
+    "name": "Codex",
+    "product": "Codex / ChatGPT",
+    "account": "thsottiaux",
+    "note": "Event list catalogued by codex-resets.com; timestamps re-derived from each status ID.",
+    "events": [
+      {
+        "id": "1968163721034994139",
+        "kind": "reset"
+      },
+      {
+        "id": "1986166501435711936",
+        "kind": "reset"
+      },
+      {
+        "id": "1992370994028388670",
+        "kind": "reset"
+      },
+      {
+        "id": "1995988609896513743",
+        "kind": "reset"
+      },
+      {
+        "id": "2001114683047317723",
+        "kind": "reset"
+      },
+      {
+        "id": "2002137269134819610",
+        "kind": "reset"
+      },
+      {
+        "id": "2004100061933064395",
+        "kind": "reset"
+      },
+      {
+        "id": "2028649088594436225",
+        "kind": "reset"
+      },
+      {
+        "id": "2029308599835738218",
+        "kind": "reset"
+      },
+      {
+        "id": "2030474136024400173",
+        "kind": "reset"
+      },
+      {
+        "id": "2031216405266481489",
+        "kind": "reset"
+      },
+      {
+        "id": "2031605592352313567",
+        "kind": "reset"
+      },
+      {
+        "id": "2037346989244096581",
+        "kind": "reset"
+      },
+      {
+        "id": "2039248564967424483",
+        "kind": "reset"
+      },
+      {
+        "id": "2041655710346572085",
+        "kind": "reset"
+      },
+      {
+        "id": "2042299371602264319",
+        "kind": "reset"
+      },
+      {
+        "id": "2044943514832871564",
+        "kind": "reset"
+      },
+      {
+        "id": "2046367145588916687",
+        "kind": "reset"
+      },
+      {
+        "id": "2048997818673537399",
+        "kind": "reset"
+      },
+      {
+        "id": "2055707616605835333",
+        "kind": "reset"
+      },
+      {
+        "id": "2058280452851638313",
+        "kind": "reset"
+      },
+      {
+        "id": "2061106703446450392",
+        "kind": "reset"
+      },
+      {
+        "id": "2062329981548802523",
+        "kind": "reset"
+      },
+      {
+        "id": "2067399435009622521",
+        "kind": "reset"
+      },
+      {
+        "id": "2070653282440405046",
+        "kind": "reset"
+      },
+      {
+        "id": "2071381664853319742",
+        "kind": "reset"
+      },
+      {
+        "id": "2071740419030053227",
+        "kind": "reset"
+      },
+      {
+        "id": "2075330198887940337",
+        "kind": "reset"
+      },
+      {
+        "id": "2075641131002700120",
+        "kind": "reset"
+      },
+      {
+        "id": "2075820987833274448",
+        "kind": "reset"
+      },
+      {
+        "id": "2076418567143408112",
+        "kind": "reset"
+      },
+      {
+        "id": "2076735790567338203",
+        "kind": "reset"
+      },
+      {
+        "id": "2077114635308986427",
+        "kind": "reset"
+      },
+      {
+        "id": "2077607697487188198",
+        "kind": "reset"
+      },
+      {
+        "id": "2078320950488297917",
+        "kind": "reset"
+      },
+      {
+        "id": "2079609157934886975",
+        "kind": "reset"
+      }
+    ]
+  }
+}

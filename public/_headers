@@ -1,0 +1,17 @@
+# Cloudflare Pages header rules.
+# Applied at the edge — no Worker, no paid features.
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: DENY
+  Permissions-Policy: geolocation=(), microphone=(), camera=()
+
+# The dataset is the thing that changes. Keep it fresh but still cacheable.
+/data/*
+  Cache-Control: public, max-age=300, must-revalidate
+
+/styles.css
+  Cache-Control: public, max-age=3600
+/app.js
+  Cache-Control: public, max-age=3600

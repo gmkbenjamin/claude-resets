@@ -1,0 +1,12 @@
+name = "claude-resets"
+compatibility_date = "2026-07-23"
+
+# Assets-only Worker: the site is pure static files, so there is no script and
+# `main` is deliberately absent. Unmatched requests return 404.
+#
+# Static asset requests are free and unlimited — only Worker invocations bill,
+# and there are none here, so this stays inside the free plan.
+#
+# public/_headers is parsed by the assets runtime (and not itself served).
+[assets]
+directory = "./public"
