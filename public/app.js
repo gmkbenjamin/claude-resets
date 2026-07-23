@@ -10,6 +10,19 @@ const CODEX = 'codex';
 const COLOR = { [CLAUDE]: 'var(--series-claude)', [CODEX]: 'var(--series-codex)' };
 
 const $ = (sel) => document.querySelector(sel);
+
+/* Everything below flows from data/resets.json, which carries free text — notes
+   are scraped post bodies, and the README invites outside corrections. Any of it
+   reaching innerHTML unescaped is stored XSS, so nothing interpolated into markup
+   skips esc(), and no href skips safeUrl(). */
+const ESCAPES = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+const esc = (value) => String(value ?? '').replace(/[&<>"']/g, (c) => ESCAPES[c]);
+
+/** Only http(s) survives — blocks javascript:, data:, and friends. */
+const safeUrl = (value) => {
+  const url = String(value ?? '');
+  return /^https?:\/\//i.test(url) ? url : '#';
+};
 const svgEl = (tag, attrs = {}) => {
   const n = document.createElementNS('http://www.w3.org/2000/svg', tag);
   for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v);
@@ -88,7 +101,7 @@ function makeTip(host) {
 
 const dotRow = (key, label, value) =>
   `<div class="tip-row"><span class="swatch" style="--c:${COLOR[key]}"></span>` +
-  `${label} <b>${value}</b></div>`;
+  `${esc(label)} <b>${esc(value)}</b></div>`;
 
 /* ── Chart: cumulative resets (step line) ─────────────────────────────── */
 
@@ -248,18 +261,22 @@ function drawMonthly(host, series, windowStart, now) {
           class: 'bar-mark', x: bx, y: y(v), width: barW, height: m.t + ih - y(v), fill: COLOR[key],
         }));
       }
-      const hit = svgEl('rect', {                  // hit target ≥ 24px wide
-        class: 'hit', x: cx - Math.max(groupW, 24) / 2, y: m.t,
-        width: Math.max(groupW, 24), height: ih,
-      });
-      svg.appendChild(hit);
-      hit.addEventListener('pointerenter', () => {
-        const html = `<div class="tip-date">${fmtMonth(mo)} ${mo.getUTCFullYear()}</div>` +
-          keys.map((kk) => dotRow(kk, series[kk].name, counts[kk][i])).join('');
-        tip.show(html, cx, m.t);
-      });
-      hit.addEventListener('pointerleave', () => tip.hide());
     });
+
+    // One hit target per MONTH, outside the series loop. Nesting it produced a
+    // full-width layer per series, and the overlap made pointerenter/leave
+    // fight each other and flicker the tooltip.
+    const hitW = Math.max(barW * keys.length + GAP * (keys.length - 1), 24);
+    const hit = svgEl('rect', {
+      class: 'hit', x: cx - hitW / 2, y: m.t, width: hitW, height: ih,
+    });
+    svg.appendChild(hit);
+    hit.addEventListener('pointerenter', () => {
+      const html = `<div class="tip-date">${esc(fmtMonth(mo))} ${mo.getUTCFullYear()}</div>` +
+        keys.map((kk) => dotRow(kk, series[kk].name, counts[kk][i])).join('');
+      tip.show(html, cx, m.t);
+    });
+    hit.addEventListener('pointerleave', () => tip.hide());
   });
 
   // x-axis year label
@@ -304,7 +321,7 @@ function drawLanes(host, providers, now) {
     providers[key].events.forEach((ev) => {
       const cx = x(ev.at);
       const dot = svgEl('circle', { class: 'lane-dot', cx, cy: ly, r: 5, fill: COLOR[key] });
-      const link = svgEl('a', { href: ev.url, target: '_blank', rel: 'noopener' });
+      const link = svgEl('a', { href: safeUrl(ev.url), target: '_blank', rel: 'noopener' });
       link.appendChild(svgEl('circle', { class: 'hit', cx, cy: ly, r: 13 }));
       link.appendChild(dot);
       svg.appendChild(link);
@@ -368,10 +385,10 @@ function renderTiles(sets) {
     ['Resets tracked', s.count, '', 'Announcements that flushed the counters.'],
     ['Average gap', round1(s.meanGap), 'days', 'Mean time between consecutive resets.'],
     ['Longest drought', round1(s.longestGap), 'days', 'The most patience ever required.'],
-    ['Pace', round1(s.perMonth), '/ month', 'Resets per month since tracking began.'],
+    ['Pace', round1(s.perMonth), '/ month', 'Announced resets per month.'],
   ];
   $('#claude-tiles').innerHTML = tiles.map(([label, v, unit, note]) =>
-    `<dl class="tile"><dt>${label}</dt><dd>${v}${unit ? `<small>${unit}</small>` : ''}</dd>` +
+    `<dl class="tile"><dt>${esc(label)}</dt><dd>${esc(v)}${unit ? `<small>${esc(unit)}</small>` : ''}</dd>` +
     `<p>${note}</p></dl>`).join('');
 }
 
@@ -399,8 +416,8 @@ function renderScoreboard(stats, sets) {
   $('#scoreboard').innerHTML =
     `<div class="sb-row sb-head">
        <div>Metric</div>
-       <div class="sb-val"><span class="swatch" style="--c:${COLOR[CLAUDE]}"></span>${sets[CLAUDE].name}</div>
-       <div class="sb-val"><span class="swatch" style="--c:${COLOR[CODEX]}"></span>${sets[CODEX].name}</div>
+       <div class="sb-val"><span class="swatch" style="--c:${COLOR[CLAUDE]}"></span>${esc(sets[CLAUDE].name)}</div>
+       <div class="sb-val"><span class="swatch" style="--c:${COLOR[CODEX]}"></span>${esc(sets[CODEX].name)}</div>
      </div>` +
     SCORE_ROWS.map((row) =>
       `<div class="sb-row">
@@ -411,7 +428,7 @@ function renderScoreboard(stats, sets) {
 
 function renderLegend(id, sets) {
   $(id).innerHTML = [CLAUDE, CODEX].map((k) =>
-    `<span class="legend-item"><span class="swatch" style="--c:${COLOR[k]}"></span>${sets[k].name}</span>`
+    `<span class="legend-item"><span class="swatch" style="--c:${COLOR[k]}"></span>${esc(sets[k].name)}</span>`
   ).join('');
 }
 
@@ -427,8 +444,8 @@ function renderTable(stats, sets, start) {
     `<table>
        <caption>Window: ${fmtDate(start)} → ${fmtDate(state.now)}. Lower is better for
          every gap metric; higher is better for count and pace.</caption>
-       <thead><tr><th scope="col">Metric</th><th scope="col">${sets[CLAUDE].name}</th>
-         <th scope="col">${sets[CODEX].name}</th></tr></thead>
+       <thead><tr><th scope="col">Metric</th><th scope="col">${esc(sets[CLAUDE].name)}</th>
+         <th scope="col">${esc(sets[CODEX].name)}</th></tr></thead>
        <tbody>${rows}</tbody>
      </table>`;
 }
@@ -447,17 +464,17 @@ function renderArchive(sets) {
       if (i > 0) gap = `<span class="entry-gap">${round1((e.at - resetDates[i - 1]) / DAY)} days after the previous reset</span>`;
       else gap = '<span class="entry-gap">First tracked reset</span>';
     }
-    return `<li class="entry" data-kind="${e.kind}">
+    return `<li class="entry" data-kind="${esc(e.kind)}">
       <div class="entry-top">
-        <span class="entry-date">${fmtDate(e.at)}</span>
-        <span class="entry-rel">${relative(e.at, state.now)}</span>
-        <span class="tag" data-kind="${e.kind}">${e.kind === 'reset' ? 'Reset' : 'Limit change'}</span>
-        ${e.scope ? `<span class="tag">${e.scope}</span>` : ''}
+        <span class="entry-date">${esc(fmtDate(e.at))}</span>
+        <span class="entry-rel">${esc(relative(e.at, state.now))}</span>
+        <span class="tag" data-kind="${esc(e.kind)}">${e.kind === 'reset' ? 'Reset' : 'Limit change'}</span>
+        ${e.scope ? `<span class="tag">${esc(e.scope)}</span>` : ''}
       </div>
-      <p class="entry-note">${e.note}</p>
+      <p class="entry-note">${esc(e.note)}</p>
       <div class="entry-foot">
         ${gap}
-        <a href="${e.url}" rel="noopener" target="_blank">Original post ↗</a>
+        <a href="${esc(safeUrl(e.url))}" rel="noopener" target="_blank">Original post ↗</a>
       </div>
     </li>`;
   }).join('');
@@ -473,12 +490,22 @@ function render() {
     [CODEX]: statsFor(sets[CODEX].dates, start, state.now),
   };
 
+  // With 0 or 1 tracked reset there is no "before that" gap, and fmtDate has
+  // nothing to format — say what is true rather than rendering NaN.
   const lastClaude = sets[CLAUDE].dates.at(-1);
-  renderCounter(lastClaude);
-  $('#hero-sub').innerHTML =
-    `The last one landed on <strong>${fmtDate(lastClaude)}</strong>. Before that, ` +
-    `Anthropic had gone ${round1((lastClaude - sets[CLAUDE].dates.at(-2)) / DAY)} days.`;
-  $('#claude-account-link').href = state.data.providers[CLAUDE].accountUrl;
+  const priorClaude = sets[CLAUDE].dates.at(-2);
+  if (!lastClaude) {
+    $('#counter').innerHTML = '<span class="counter-loading">No resets tracked yet.</span>';
+    $('#hero-sub').textContent = 'Nothing on record for Claude yet.';
+  } else {
+    renderCounter(lastClaude);
+    $('#hero-sub').innerHTML =
+      `The last one landed on <strong>${esc(fmtDate(lastClaude))}</strong>.` +
+      (priorClaude
+        ? ` Before that, Anthropic had gone ${esc(round1((lastClaude - priorClaude) / DAY))} days.`
+        : '');
+  }
+  $('#claude-account-link').href = safeUrl(state.data.providers[CLAUDE].accountUrl);
 
   const spanDays = Math.round((state.now - start) / DAY);
   $('#window-note').textContent = state.window === 'overlap'
@@ -490,16 +517,30 @@ function render() {
 
   renderTiles(sets);
   renderScoreboard(stats, sets);
+
+  // Not every reset reached everyone. Excluding the partial ones would bias the
+  // comparison the other way, since Codex publishes no scope at all — so they
+  // are counted and the caveat is stated instead.
+  const partial = sets[CLAUDE].events.filter(
+    (e) => e.at >= start && e.at <= state.now && e.scope && e.scope !== 'all');
+  $('#scope-note').textContent = partial.length
+    ? `${partial.length} of Claude's ${stats[CLAUDE].count} resets here reached only ` +
+      `part of the user base (${[...new Set(partial.map((e) => e.scope))].join(', ')}). ` +
+      `They are counted as resets; Codex scope is not published, so no equivalent ` +
+      `breakdown exists on that side.`
+    : '';
   renderLegend('#legend-cumulative', sets);
   renderLegend('#legend-monthly', sets);
   renderTable(stats, sets, start);
   renderArchive(sets);
 
   $('#foot-coverage').textContent =
-    `Coverage: ${sets[CLAUDE].dates.length} Claude resets on record from ${fmtDate(sets[CLAUDE].dates[0])}, ` +
-    `and ${sets[CODEX].dates.length} Codex resets from ${fmtDate(sets[CODEX].dates[0])}. ` +
-    `Anthropic has reset limits informally before this window; entries are only listed ` +
-    `once a linkable announcement exists, so early Claude history is certainly incomplete.`;
+    `Coverage: ${sets[CLAUDE].dates.length} resets announced by @${state.data.providers[CLAUDE].account}, ` +
+    `and ${sets[CODEX].dates.length} by @${state.data.providers[CODEX].account} for Codex. ` +
+    `The @${state.data.providers[CLAUDE].account} account was created in February 2026 and its ` +
+    `first reset announcement came on ${fmtDate(sets[CLAUDE].dates[0])}, so this is the complete ` +
+    `record for that account. Anthropic reset limits before the account existed; those are out ` +
+    `of scope here rather than missing.`;
 
   const series = {
     [CLAUDE]: { ...stats[CLAUDE], name: sets[CLAUDE].name },
@@ -547,6 +588,9 @@ function initTheme() {
 
 async function boot() {
   const res = await fetch('./data/resets.json');
+  // Without this, a 404/5xx HTML body fails later inside res.json() with a
+  // parse error that says nothing about what actually went wrong.
+  if (!res.ok) throw new Error(`resets.json: HTTP ${res.status} ${res.statusText}`);
   state.data = await res.json();
   initTheme();
   render();

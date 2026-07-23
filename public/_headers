@@ -6,6 +6,10 @@
   Referrer-Policy: strict-origin-when-cross-origin
   X-Frame-Options: DENY
   Permissions-Policy: geolocation=(), microphone=(), camera=()
+  # Defence in depth behind esc()/safeUrl() in app.js. The site loads no third
+  # party anything, so this can be strict: no inline script, no remote origins.
+  # 'unsafe-inline' for style-src only — the charts set style="--c:…" on swatches.
+  Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
 
 # The dataset is the thing that changes. Keep it fresh but still cacheable.
 /data/*

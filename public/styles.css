@@ -140,6 +140,11 @@ a:hover { text-decoration-color: currentColor; }
 }
 .topnav a:hover { background: var(--surface); color: var(--ink); }
 .topnav .nav-out { color: var(--series-codex); }
+.scope-statement {
+  margin-top: 10px; padding-left: 12px;
+  border-left: 2px solid var(--accent-soft);
+  font-size: 0.9rem; color: var(--ink-muted);
+}
 .theme-switch { margin-left: 6px; }
 .theme-switch button { padding: 5px 9px; font-size: 0.8rem; }
 .sb-key { margin: -8px 0 22px; }

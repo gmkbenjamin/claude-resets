@@ -55,9 +55,11 @@ before you rely on it, or edit it:
   (ceiling moved, nothing flushed), and its `scope`, are **judgement calls**. They
   matter: a wrong `kind` silently adds or removes a reset from every statistic on the
   page.
-- Coverage of Claude begins in April 2026. Anthropic reset limits before then, but
-  entries are only listed where a linkable announcement exists, so the early history
-  is incomplete.
+- **Scope: only announcements from [@ClaudeDevs](https://x.com/ClaudeDevs)** are
+  tracked. That account was created in February 2026 and its first reset
+  announcement came on 16 April 2026, so this is that account's complete record
+  rather than a sample. Anthropic reset limits before the account existed; those are
+  out of scope here, not missing.
 
 The Codex entries are essentially just IDs and dates, so there is far less to get
 wrong there.
