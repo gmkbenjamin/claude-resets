@@ -39,6 +39,26 @@ const fmtMonth = (d) =>
 const round1 = (n) => Math.round(n * 10) / 10;
 const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
 
+/* Every "days since" on the page comes from here, against one clock (state.now),
+   so the hero and the scoreboard can never be computed from two different
+   instants. The hero floors it because a headline reading "5.3" is silly; the
+   scoreboard keeps the tenth because it is a comparison. Same number, two
+   presentations — not two numbers. */
+const daysBetween = (from, to) => (to - from) / DAY;
+
+/* Elapsed time truncates instead of rounding. The hero shows whole days and the
+   scoreboard shows tenths of the same quantity, so rounding made them contradict
+   each other: at 7.98 days the hero floored to "7" while the board rounded to
+   "8d". Truncating keeps the whole-number part identical in both. Gap metrics
+   still round — they are measurements between two past events, and none of them
+   is also displayed as a floored integer somewhere else. */
+const trunc1 = (n) => Math.floor(n * 10) / 10;
+
+/* null/undefined/NaN all mean "no value to show". Without this, round1(null)
+   quietly renders 0, which reads as a real measurement of zero. */
+const num = (v, dp = 1, round = round1) =>
+  v === null || v === undefined || Number.isNaN(v) ? '—' : (dp ? round(v) : v);
+
 function relative(from, to = new Date()) {
   const days = Math.floor((to - from) / DAY);
   if (days <= 0) return 'today';
@@ -72,7 +92,7 @@ function statsFor(dates, windowStart, now) {
     count: inWindow.length,
     dates: inWindow,
     last,
-    daysSinceLast: last ? (now - last) / DAY : null,
+    daysSinceLast: last ? daysBetween(last, now) : null,
     meanGap: gaps.length ? gaps.reduce((a, b) => a + b, 0) / gaps.length : null,
     medianGap: median(gaps),
     longestGap: gaps.length ? Math.max(...gaps) : null,
@@ -81,6 +101,17 @@ function statsFor(dates, windowStart, now) {
 }
 
 /* ── Tooltip ──────────────────────────────────────────────────────────── */
+
+/* A chart with nothing to plot gets a sentence. The alternative is a bare pair
+   of axes, which looks like the page failed to load rather than like an honest
+   "nothing here yet". */
+function emptyChart(host, message) {
+  host.textContent = '';
+  const p = document.createElement('p');
+  p.className = 'chart-empty';
+  p.textContent = message;
+  host.appendChild(p);
+}
 
 function makeTip(host) {
   const tip = document.createElement('div');
@@ -99,8 +130,14 @@ function makeTip(host) {
   };
 }
 
+/* data-series, not an inline style — see the .swatch rules in styles.css. `key`
+   is always CLAUDE or CODEX, but it is escaped anyway: this lands in an
+   attribute, and "it can only be one of two values" is exactly the assumption
+   that stops being true later. */
+const swatch = (key) => `<span class="swatch" data-series="${esc(key)}"></span>`;
+
 const dotRow = (key, label, value) =>
-  `<div class="tip-row"><span class="swatch" style="--c:${COLOR[key]}"></span>` +
+  `<div class="tip-row">${swatch(key)}` +
   `${esc(label)} <b>${esc(value)}</b></div>`;
 
 /* ── Chart: cumulative resets (step line) ─────────────────────────────── */
@@ -295,7 +332,7 @@ function drawMonthly(host, series, windowStart, now) {
 function drawLanes(host, providers, now) {
   host.textContent = '';
   const all = [...providers[CLAUDE].dates, ...providers[CODEX].dates];
-  if (!all.length) return;
+  if (!all.length) { emptyChart(host, 'No resets tracked yet.'); return; }
   const start = new Date(Math.min(...all) - 6 * DAY);
   const end = new Date(+now + 3 * DAY);
 
@@ -365,27 +402,38 @@ function providerSets() {
   return { [CLAUDE]: mk(CLAUDE), [CODEX]: mk(CODEX) };
 }
 
+/* A provider with nothing tracked has no dates[0]. Math.min/Math.max over an
+   undefined yields NaN, and NaN spreads silently: NaN window bounds produce
+   charts with no marks and axis labels reading "Invalid Date". Every boundary
+   is taken from providers that actually have a reset. */
+const trackedStarts = (sets) =>
+  [sets[CLAUDE].dates[0], sets[CODEX].dates[0]].filter(Boolean);
+
 function windowStart(sets) {
-  const firsts = [sets[CLAUDE].dates[0], sets[CODEX].dates[0]];
+  const firsts = trackedStarts(sets);
+  if (state.window === '90' || !firsts.length) return new Date(+state.now - 90 * DAY);
   if (state.window === 'all') return new Date(Math.min(...firsts));
-  if (state.window === '90') return new Date(+state.now - 90 * DAY);
+  // "overlap" is the later of the two starts. With only one provider tracked
+  // there is no overlap to speak of, and Math.max of that one date is its own
+  // start — which is the honest answer, not a fabricated one.
   return new Date(Math.max(...firsts));
 }
 
 function renderCounter(lastReset) {
-  const days = Math.floor((Date.now() - lastReset) / DAY);
+  const days = Math.floor(daysBetween(lastReset, state.now));
   $('#counter').innerHTML =
     `<span class="days-figure">${days}</span>` +
     `<span class="days-unit">${days === 1 ? 'day' : 'days'}</span>`;
 }
 
 function renderTiles(sets) {
-  const s = statsFor(sets[CLAUDE].dates, sets[CLAUDE].dates[0], state.now);
+  const first = sets[CLAUDE].dates[0];
+  const s = statsFor(sets[CLAUDE].dates, first ?? state.now, state.now);
   const tiles = [
     ['Resets tracked', s.count, '', 'Announcements that flushed the counters.'],
-    ['Average gap', round1(s.meanGap), 'days', 'Mean time between consecutive resets.'],
-    ['Longest drought', round1(s.longestGap), 'days', 'The most patience ever required.'],
-    ['Pace', round1(s.perMonth), '/ month', 'Announced resets per month.'],
+    ['Average gap', num(s.meanGap), 'days', 'Mean time between consecutive resets.'],
+    ['Longest drought', num(s.longestGap), 'days', 'The most patience ever required.'],
+    ['Pace', first ? num(s.perMonth) : '—', '/ month', 'Announced resets per month.'],
   ];
   $('#claude-tiles').innerHTML = tiles.map(([label, v, unit, note]) =>
     `<dl class="tile"><dt>${esc(label)}</dt><dd>${esc(v)}${unit ? `<small>${esc(unit)}</small>` : ''}</dd>` +
@@ -395,7 +443,8 @@ function renderTiles(sets) {
 const SCORE_ROWS = [
   { key: 'count', label: 'Resets announced', sub: 'Inside the window', better: 'high', unit: '' },
   { key: 'perMonth', label: 'Pace', sub: 'Resets per month', better: 'high', unit: '/mo', dp: 1 },
-  { key: 'daysSinceLast', label: 'Days since last', sub: 'As of right now', better: 'low', unit: 'd', dp: 1 },
+  // elapsed: shares its whole-number part with the hero counter — see trunc1.
+  { key: 'daysSinceLast', label: 'Days since last', sub: 'As of right now', better: 'low', unit: 'd', dp: 1, elapsed: true },
   { key: 'meanGap', label: 'Average gap', sub: 'Mean days between resets', better: 'low', unit: 'd', dp: 1 },
   { key: 'medianGap', label: 'Median gap', sub: 'Typical wait, outliers aside', better: 'low', unit: 'd', dp: 1 },
   { key: 'longestGap', label: 'Longest drought', sub: 'Worst wait in the window', better: 'low', unit: 'd', dp: 1 },
@@ -404,11 +453,11 @@ const SCORE_ROWS = [
 function renderScoreboard(stats, sets) {
   const cell = (row, key) => {
     const v = stats[key][row.key];
-    if (v === null || v === undefined) return `<div class="sb-val">—</div>`;
+    if (v === null || v === undefined || Number.isNaN(v)) return `<div class="sb-val">—</div>`;
     const other = stats[key === CLAUDE ? CODEX : CLAUDE][row.key];
-    const lead = other !== null && other !== undefined &&
+    const lead = other !== null && other !== undefined && !Number.isNaN(other) &&
       (row.better === 'high' ? v > other : v < other);
-    const shown = row.dp ? round1(v) : v;
+    const shown = num(v, row.dp, row.elapsed ? trunc1 : round1);
     return `<div class="sb-val${lead ? ' is-lead' : ''}">${shown}` +
       `${row.unit ? `<span class="sb-unit">${row.unit}</span>` : ''}</div>`;
   };
@@ -416,8 +465,8 @@ function renderScoreboard(stats, sets) {
   $('#scoreboard').innerHTML =
     `<div class="sb-row sb-head">
        <div>Metric</div>
-       <div class="sb-val"><span class="swatch" style="--c:${COLOR[CLAUDE]}"></span>${esc(sets[CLAUDE].name)}</div>
-       <div class="sb-val"><span class="swatch" style="--c:${COLOR[CODEX]}"></span>${esc(sets[CODEX].name)}</div>
+       <div class="sb-val">${swatch(CLAUDE)}${esc(sets[CLAUDE].name)}</div>
+       <div class="sb-val">${swatch(CODEX)}${esc(sets[CODEX].name)}</div>
      </div>` +
     SCORE_ROWS.map((row) =>
       `<div class="sb-row">
@@ -428,15 +477,15 @@ function renderScoreboard(stats, sets) {
 
 function renderLegend(id, sets) {
   $(id).innerHTML = [CLAUDE, CODEX].map((k) =>
-    `<span class="legend-item"><span class="swatch" style="--c:${COLOR[k]}"></span>${esc(sets[k].name)}</span>`
+    `<span class="legend-item">${swatch(k)}${esc(sets[k].name)}</span>`
   ).join('');
 }
 
 function renderTable(stats, sets, start) {
   const rows = SCORE_ROWS.map((row) => {
     const fmt = (k) => {
-      const v = stats[k][row.key];
-      return v === null || v === undefined ? '—' : (row.dp ? round1(v) : v) + (row.unit ? ` ${row.unit}` : '');
+      const shown = num(stats[k][row.key], row.dp, row.elapsed ? trunc1 : round1);
+      return shown === '—' ? '—' : shown + (row.unit ? ` ${row.unit}` : '');
     };
     return `<tr><th scope="row">${row.label}</th><td>${fmt(CLAUDE)}</td><td>${fmt(CODEX)}</td></tr>`;
   }).join('');
@@ -483,6 +532,11 @@ function renderArchive(sets) {
 let charts = () => {};
 
 function render() {
+  // Re-read the clock every render. state.now used to be stamped once at module
+  // load, so a tab left open overnight kept insisting it was yesterday — and
+  // the hero, which read Date.now() directly, disagreed with the scoreboard,
+  // which read the stale state.now.
+  state.now = new Date();
   const sets = providerSets();
   const start = windowStart(sets);
   const stats = {
@@ -502,18 +556,35 @@ function render() {
     $('#hero-sub').innerHTML =
       `The last one landed on <strong>${esc(fmtDate(lastClaude))}</strong>.` +
       (priorClaude
-        ? ` Before that, Anthropic had gone ${esc(round1((lastClaude - priorClaude) / DAY))} days.`
+        ? ` Before that, Anthropic had gone ${esc(num(daysBetween(priorClaude, lastClaude)))} days.`
         : '');
   }
   $('#claude-account-link').href = safeUrl(state.data.providers[CLAUDE].accountUrl);
 
-  const spanDays = Math.round((state.now - start) / DAY);
+  // fmtDate on an untracked provider's dates[0] is fmtDate(undefined), which
+  // throws — and it threw from inside render(), so a single empty series took
+  // the whole page down to the "Could not load reset data" catch.
+  const since = (key) => {
+    const first = sets[key].dates[0];
+    return first ? fmtDate(first) : 'no resets yet';
+  };
+  const spanDays = Math.round(daysBetween(start, state.now));
+  // 2 = a real comparison, 1 = nothing to compare against, 0 = nothing at all.
+  // Each gets its own sentence; none of them get a fabricated date.
+  const tracked = trackedStarts(sets).length;
+  const noComparison = tracked === 0
+    ? 'No resets are tracked for either provider yet.'
+    : 'Only one provider has tracked resets, so there is nothing to compare against yet.';
   $('#window-note').textContent = state.window === 'overlap'
-    ? `Both providers tracked since ${fmtDate(start)} (${spanDays} days) — the fair comparison.`
+    ? tracked === 2
+      ? `Both providers tracked since ${fmtDate(start)} (${spanDays} days) — the fair comparison.`
+      : noComparison
     : state.window === '90'
       ? `The last 90 days.`
-      : `Everything on record. Codex tracking starts ${fmtDate(sets[CODEX].dates[0])}, ` +
-        `Claude only from ${fmtDate(sets[CLAUDE].dates[0])}, so totals are not like-for-like.`;
+      : tracked === 2
+        ? `Everything on record. Codex tracking starts ${since(CODEX)}, ` +
+          `Claude only from ${since(CLAUDE)}, so totals are not like-for-like.`
+        : `Everything on record. ${noComparison}`;
 
   renderTiles(sets);
   renderScoreboard(stats, sets);
@@ -534,19 +605,33 @@ function render() {
   renderTable(stats, sets, start);
   renderArchive(sets);
 
+  const claudeAccount = state.data.providers[CLAUDE].account;
   $('#foot-coverage').textContent =
-    `Coverage: ${sets[CLAUDE].dates.length} resets announced by @${state.data.providers[CLAUDE].account}, ` +
+    `Coverage: ${sets[CLAUDE].dates.length} resets announced by @${claudeAccount}, ` +
     `and ${sets[CODEX].dates.length} by @${state.data.providers[CODEX].account} for Codex. ` +
-    `The @${state.data.providers[CLAUDE].account} account was created in February 2026 and its ` +
-    `first reset announcement came on ${fmtDate(sets[CLAUDE].dates[0])}, so this is the complete ` +
-    `record for that account. Anthropic reset limits before the account existed; those are out ` +
-    `of scope here rather than missing.`;
+    `The @${claudeAccount} account was created in February 2026` +
+    (sets[CLAUDE].dates[0]
+      ? ` and its first reset announcement came on ${since(CLAUDE)}, so this is the ` +
+        `complete record for that account.`
+      : ` and has announced no resets yet.`) +
+    ` Anthropic reset limits before the account existed; those are out of scope ` +
+    `here rather than missing.`;
 
   const series = {
     [CLAUDE]: { ...stats[CLAUDE], name: sets[CLAUDE].name },
     [CODEX]: { ...stats[CODEX], name: sets[CODEX].name },
   };
+  // Nothing tracked anywhere means no meaningful axis to draw. A window that
+  // merely contains no resets still gets its charts — a flat line across an
+  // empty 90 days is a real answer.
+  const anyTracked = trackedStarts(sets).length > 0;
   charts = () => {
+    if (!anyTracked) {
+      for (const id of ['#chart-cumulative', '#chart-monthly', '#chart-lanes']) {
+        emptyChart($(id), 'No resets tracked yet.');
+      }
+      return;
+    }
     drawCumulative($('#chart-cumulative'), series, start, state.now);
     drawMonthly($('#chart-monthly'), series, start, state.now);
     drawLanes($('#chart-lanes'), sets, state.now);

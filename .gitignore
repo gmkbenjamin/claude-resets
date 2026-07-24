@@ -16,3 +16,4 @@ data/needs-review.json
 *.log
 scripts/auto-update.sh
 .auto-update.lock/
+scripts/make-og.html

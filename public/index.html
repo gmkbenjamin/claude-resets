@@ -4,15 +4,73 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>claude-resets.com — how long since Anthropic last reset your usage limits</title>
-<meta name="description" content="A tracker for every time Anthropic has reset Claude Code's 5-hour and weekly usage limits — with a head-to-head comparison against Codex resets.">
+<meta name="description" content="Track every time Anthropic has reset Claude Code's 5-hour and weekly usage limits: a live day counter, the full announcement archive, and a head-to-head against OpenAI Codex's resets.">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<meta name="theme-color" content="#faf9f5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1f1e1d" media="(prefers-color-scheme: dark)">
 <link rel="canonical" href="https://claude-resets.com/">
 <meta property="og:type" content="website">
-<meta property="og:title" content="claude-resets.com">
-<meta property="og:description" content="How long has it been since Anthropic last reset your usage limits? Plus a head-to-head against Codex.">
+<meta property="og:site_name" content="claude-resets.com">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="claude-resets.com — days since Anthropic last reset your usage limits">
+<meta property="og:description" content="A live counter, the full archive of @ClaudeDevs reset announcements, and a head-to-head against OpenAI Codex.">
 <meta property="og:url" content="https://claude-resets.com/">
+<meta property="og:image" content="https://claude-resets.com/og.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="claude-resets.com — a running count of days since Anthropic last reset Claude Code usage limits.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="claude-resets.com — days since Anthropic last reset your usage limits">
+<meta name="twitter:description" content="A live counter, the full archive of @ClaudeDevs reset announcements, and a head-to-head against OpenAI Codex.">
+<meta name="twitter:image" content="https://claude-resets.com/og.png">
+<meta name="twitter:image:alt" content="claude-resets.com — a running count of days since Anthropic last reset Claude Code usage limits.">
 <link rel="icon" href="./favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="./favicon.svg">
 <link rel="stylesheet" href="./styles.css">
+<!-- build:jsonld -->
+<script type="application/ld+json">
+[
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "description": "How long since Anthropic last reset Claude Code's usage limits, with the full announcement archive and a head-to-head against OpenAI Codex.",
+    "inLanguage": "en",
+    "name": "claude-resets.com",
+    "url": "https://claude-resets.com/"
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    "creator": {
+      "@type": "Organization",
+      "name": "claude-resets.com",
+      "url": "https://claude-resets.com/"
+    },
+    "description": "Every announced reset of Claude Code's 5-hour and weekly usage limits by @ClaudeDevs, alongside Codex resets, with dates derived from each post's X status ID.",
+    "distribution": {
+      "@type": "DataDownload",
+      "contentUrl": "https://claude-resets.com/data/resets.json",
+      "encodingFormat": "application/json"
+    },
+    "isAccessibleForFree": true,
+    "keywords": [
+      "Claude",
+      "Claude Code",
+      "Anthropic",
+      "usage limits",
+      "rate limit reset",
+      "Codex",
+      "OpenAI"
+    ],
+    "name": "Claude and Codex usage-limit reset history",
+    "sameAs": "https://github.com/gmkbenjamin/claude-resets",
+    "temporalCoverage": "2025-09-17/2026-07-21",
+    "url": "https://claude-resets.com/"
+  }
+]
+</script>
+<!-- /build:jsonld -->
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -27,8 +85,8 @@
       <a href="#compare">Compare</a>
       <a href="#timeline">Timeline</a>
       <a href="#archive">Archive</a>
-      <a href="https://codex-resets.com/" rel="noopener" class="nav-out">codex&#8209;resets<span aria-hidden="true"> ↗</span></a>
-      <a href="https://github.com/gmkbenjamin/claude-resets" rel="noopener">Source<span aria-hidden="true"> ↗</span></a>
+      <a href="https://codex-resets.com/" rel="noopener" class="nav-out nav-ext">codex&#8209;resets<span aria-hidden="true"> ↗</span></a>
+      <a href="https://github.com/gmkbenjamin/claude-resets" rel="noopener" class="nav-ext">Source<span aria-hidden="true"> ↗</span></a>
       <div class="segmented theme-switch" id="theme-switch" role="group" aria-label="Colour theme">
         <button type="button" data-theme-opt="dark" aria-pressed="false">Dark</button>
         <button type="button" data-theme-opt="light" aria-pressed="false">Light</button>
@@ -42,11 +100,13 @@
   <!-- ── Hero ─────────────────────────────────────────────────────────── -->
   <section class="hero">
     <div class="wrap">
-      <p class="eyebrow">Time since Anthropic last reset everyone's usage limits</p>
+      <h1 class="eyebrow">Time since Anthropic last reset everyone's usage limits</h1>
       <div class="counter" id="counter">
-        <span class="counter-loading">…</span>
+        <!-- build:counter -->
+        <span class="counter-preview">Last reset <time datetime="2026-07-16">Jul 16, 2026</time></span>
+        <!-- /build:counter -->
       </div>
-      <p class="hero-sub" id="hero-sub"></p>
+      <p class="hero-sub" id="hero-sub"><!-- build:hero-sub -->The last one landed on <strong>Jul 16, 2026</strong>. Before that, Anthropic had gone 6.4 days.<!-- /build:hero-sub --></p>
       <p class="hero-meta">
         Tracking every reset announced by
         <a id="claude-account-link" href="https://x.com/ClaudeDevs" rel="noopener">@ClaudeDevs</a>,
@@ -60,7 +120,7 @@
   <!-- ── Claude stat tiles ────────────────────────────────────────────── -->
   <section class="band">
     <div class="wrap">
-      <div class="tiles" id="claude-tiles"></div>
+      <div class="tiles" id="claude-tiles"><!-- build:tiles --><dl class="tile"><dt>Resets tracked</dt><dd>10</dd><p>Announcements that flushed the counters.</p></dl><dl class="tile"><dt>Average gap</dt><dd>10<small>days</small></dd><p>Mean time between consecutive resets.</p></dl><dl class="tile"><dt>Longest drought</dt><dd>22<small>days</small></dd><p>The most patience ever required.</p></dl><dl class="tile"><dt>Pace</dt><dd>3.4<small>/ month</small></dd><p>Announced resets per month across the tracked period.</p></dl><!-- /build:tiles --></div>
     </div>
   </section>
 
@@ -167,7 +227,7 @@
           <span>Show limit changes</span>
         </label>
       </div>
-      <ol class="archive" id="archive-list"></ol>
+      <ol class="archive" id="archive-list"><!-- build:archive --><li class="entry" data-kind="policy"><div class="entry-top"><span class="entry-date">Jul 18, 2026</span><span class="entry-rel"></span><span class="tag" data-kind="policy">Limit change</span><span class="tag">paid plans</span></div><p class="entry-note">Kept Claude Code weekly limits 50% higher through August 19 for Pro, Max, Team and seat-based Enterprise users.</p><div class="entry-foot"><a href="https://x.com/ClaudeDevs/status/2078511173759324328" rel="noopener" target="_blank">Original post ↗</a></div></li><li class="entry" data-kind="reset"><div class="entry-top"><span class="entry-date">Jul 16, 2026</span><span class="entry-rel"></span><span class="tag" data-kind="reset">Reset</span><span class="tag">all</span></div><p class="entry-note">Reset 5-hour and weekly rate limits for all users.</p><div class="entry-foot"><span class="entry-gap">6.4 days after the previous reset</span><a href="https://x.com/ClaudeDevs/status/2077603834453770467" rel="noopener" target="_blank">Original post ↗</a></div></li><li class="entry" data-kind="reset"><div class="entry-top"><span class="entry-date">Jul 9, 2026</span><span class="entry-rel"></span><span class="tag" data-kind="reset">Reset</span><span class="tag">all</span></div><p class="entry-note">Reset 5-hour and weekly rate limits for all users.</p><div class="entry-foot"><span class="entry-gap">7.9 days after the previous reset</span><a href="https://x.com/ClaudeDevs/status/2075279141352706215" rel="noopener" target="_blank">Original post ↗</a></div></li><li class="entry" data-kind="policy"><div class="entry-top"><span class="entry-date">Jul 2, 2026</span><span class="entry-rel"></span><span class="tag" data-kind="policy">Limit change</span><span class="tag">API</span></div><p class="entry-note">Raised Claude Platform API rate limits for all users and simplified the tiers so they no longer key off API spend.</p><div class="entry-foot"><a href="https://x.com/ClaudeDevs/status/2072818299361263778" rel="noopener" target="_blank">Original post ↗</a></div></li><li class="entry" data-kind="reset"><div class="entry-top"><span class="entry-date">Jul 1, 2026</span><span class="entry-rel"></span><span class="tag" data-kind="reset">Reset</span><span class="tag">all</span></div><p class="entry-note">Reset everyone&#x27;s 5-hour and weekly rate limits once Fable 5 was ready to build with again.</p><div class="entry-foot"><span class="entry-gap">11.9 days after the previous reset</span><a href="https://x.com/ClaudeDevs/status/2072429181565288665" rel="noopener" target="_blank">Original post ↗</a></div></li><li class="entry" data-kind="reset"><div class="entry-top"><span class="entry-date">Jun 20, 2026</span><span class="entry-rel"></span><span class="tag" data-kind="reset">Reset</span><span class="tag">all</span></div><p class="entry-note">Followed up the incorrect-weekly-limit bug by resetting 5-hour and weekly usage limits for everyone, across all plans.</p><div class="entry-foot"><span class="entry-gap">0.9 days after the previous reset</span><a href="https://x.com/ClaudeDevs/status/2068122937308426676" rel="noopener" target="_blank">Original post ↗</a></div></li><li class="entry" data-kind="reset"><div class="entry-top"><span class="entry-date">Jun 19, 2026</span><span class="entry-rel"></span><span class="tag" data-kind="reset">Reset</span><span class="tag">affected users</span></div><p class="entry-note">About 3% of Max and Pro users hit a bug showing an incorrect weekly limit, in some cases blocking messages; limits reset for everyone affected.</p><div class="entry-foot"><span class="entry-gap">9.2 days after the previous reset</span><a href="https://x.com/ClaudeDevs/status/2067802163498352929" rel="noopener" target="_blank">Original post ↗</a></div></li><li class="entry" data-kind="reset"><div class="entry-top"><span class="entry-date">Jun 9, 2026</span><span class="entry-rel"></span><span class="tag" data-kind="reset">Reset</span><span class="tag">all</span></div><p class="entry-note">Reset 5-hour and weekly rate limits for all users.</p><div class="entry-foot"><span class="entry-gap">8.2 days after the previous reset</span><a href="https://x.com/ClaudeDevs/status/2064464557951852643" rel="noopener" target="_blank">Original post ↗</a></div></li><li class="entry" data-kind="reset"><div class="entry-top"><span class="entry-date">Jun 1, 2026</span><span class="entry-rel"></span><span class="tag" data-kind="reset">Reset</span><span class="tag">Pro + Max</span></div><p class="entry-note">Fixed an issue where some Claude Code sessions spawned excessive parallel subagents and burned usage faster than expected, then reset limits.</p><div class="entry-foot"><span class="entry-gap">17 days after the previous reset</span><a href="https://x.com/ClaudeDevs/status/2061501787769893055" rel="noopener" target="_blank">Original post ↗</a></div></li><li class="entry" data-kind="reset"><div class="entry-top"><span class="entry-date">May 15, 2026</span><span class="entry-rel"></span><span class="tag" data-kind="reset">Reset</span><span class="tag">all</span></div><p class="entry-note">A Friday reset of everyone&#x27;s 5-hour and weekly rate limits, with no incident attached.</p><div class="entry-foot"><span class="entry-gap">22 days after the previous reset</span><a href="https://x.com/ClaudeDevs/status/2055347539923308703" rel="noopener" target="_blank">Original post ↗</a></div></li><li class="entry" data-kind="policy"><div class="entry-top"><span class="entry-date">May 6, 2026</span><span class="entry-rel"></span><span class="tag" data-kind="policy">Limit change</span><span class="tag">paid plans</span></div><p class="entry-note">Doubled Claude Code&#x27;s 5-hour limits on Pro, Max, Team and seat-based Enterprise, removed the peak-hours reduction, and raised Opus API limits.</p><div class="entry-foot"><a href="https://x.com/ClaudeDevs/status/2052064938840228237" rel="noopener" target="_blank">Original post ↗</a></div></li><li class="entry" data-kind="reset"><div class="entry-top"><span class="entry-date">Apr 23, 2026</span><span class="entry-rel"></span><span class="tag" data-kind="reset">Reset</span><span class="tag">all</span></div><p class="entry-note">Published a post-mortem on three Claude Code quality regressions, fixed in v2.1.116+, and reset usage limits for all subscribers.</p><div class="entry-foot"><span class="entry-gap">6.9 days after the previous reset</span><a href="https://x.com/ClaudeDevs/status/2047371123185287223" rel="noopener" target="_blank">Original post ↗</a></div></li><li class="entry" data-kind="reset"><div class="entry-top"><span class="entry-date">Apr 16, 2026</span><span class="entry-rel"></span><span class="tag" data-kind="reset">Reset</span><span class="tag">all</span></div><p class="entry-note">Fixed a bug where subscription rate limits weren&#x27;t adjusted for long-context requests on Opus 4.7, then reset 5-hour and weekly limits.</p><div class="entry-foot"><span class="entry-gap">First tracked reset</span><a href="https://x.com/ClaudeDevs/status/2044868953206612154" rel="noopener" target="_blank">Original post ↗</a></div></li><!-- /build:archive --></ol>
     </div>
   </section>
 

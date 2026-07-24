@@ -140,6 +140,10 @@ a:hover { text-decoration-color: currentColor; }
 }
 .topnav a:hover { background: var(--surface); color: var(--ink); }
 .topnav .nav-out { color: var(--series-codex); }
+.chart-empty {
+  margin: 0; padding: 46px 0; text-align: center;
+  color: var(--ink-muted); font-size: 0.9rem;
+}
 .scope-statement {
   margin-top: 10px; padding-left: 12px;
   border-left: 2px solid var(--accent-soft);
@@ -148,12 +152,6 @@ a:hover { text-decoration-color: currentColor; }
 .theme-switch { margin-left: 6px; }
 .theme-switch button { padding: 5px 9px; font-size: 0.8rem; }
 .sb-key { margin: -8px 0 22px; }
-.ghost-btn {
-  font: inherit; font-size: 0.88rem; color: var(--ink-2);
-  background: none; border: 1px solid var(--hairline);
-  padding: 6px 11px; border-radius: var(--radius-sm); cursor: pointer;
-}
-.ghost-btn:hover { background: var(--surface); color: var(--ink); }
 
 /* ── Hero ─────────────────────────────────────────────────────────────── */
 .hero { padding: 68px 0 44px; text-align: center; }
@@ -169,6 +167,15 @@ a:hover { text-decoration-color: currentColor; }
   color: var(--ink-muted); font-weight: 400;
   font-size: clamp(2rem, 8vw, 3rem);
 }
+/* Deterministic pre-render fallback: JS replaces #counter with the live day
+   figure on load, so this shows only to crawlers and for the first paint. It
+   states the last reset DATE — a stable fact — rather than a day count that
+   would drift from the built HTML and make every rebuild a spurious diff. */
+.counter-preview {
+  color: var(--ink-2); font-weight: 600;
+  font-size: clamp(1.5rem, 5.5vw, 2.4rem);
+}
+.counter-preview time { color: var(--accent); white-space: nowrap; }
 .days-figure {
   font-size: clamp(3.4rem, 12vw, 6.5rem);
   font-weight: 800; letter-spacing: -0.045em; line-height: 0.9;
@@ -275,10 +282,16 @@ a:hover { text-decoration-color: currentColor; }
   color: var(--ink-muted);
 }
 .sb-head .sb-val { display: flex; align-items: center; justify-content: flex-end; gap: 7px; }
+/* Keyed off data-series rather than an inline style="--c:…". The inline form
+   worked, but it forced 'unsafe-inline' into style-src for the whole site to
+   colour four small squares — a bad trade. There are exactly two series, so
+   they can just be named here. */
 .swatch {
   width: 10px; height: 10px; border-radius: 3px; flex: none;
-  background: var(--c, var(--ink-muted));
+  background: var(--ink-muted);
 }
+.swatch[data-series="claude"] { background: var(--series-claude); }
+.swatch[data-series="codex"] { background: var(--series-codex); }
 .sb-label { font-size: 0.92rem; }
 .sb-label small { display: block; color: var(--ink-muted); font-size: 0.8rem; }
 .sb-val {
@@ -406,7 +419,22 @@ code {
   .band { padding: 30px 0; }
   .sb-row { grid-template-columns: 1fr 72px 72px; gap: 8px; padding: 12px 14px; }
   .sb-val { font-size: 0.95rem; }
-  .topnav a { display: none; }
+
+  /* This used to be `.topnav a { display: none }`, which took every link with
+     it — including Compare / Timeline / Archive, leaving phone visitors with no
+     way to reach the sections and nothing to replace them. Only the two
+     outbound links go; the in-page anchors stay and shrink to fit. */
+  .topnav a.nav-ext { display: none; }
+  .topnav { gap: 0; }
+  .topnav a { padding: 7px 7px; font-size: 0.82rem; }
+  .topbar-inner { gap: 8px; }
+  .wordmark { font-size: 0.95rem; }
+}
+
+/* Below this the wordmark and four controls genuinely cannot share a row. */
+@media (max-width: 400px) {
+  .topbar-inner { flex-wrap: wrap; min-height: 0; padding-bottom: 8px; }
+  .topnav { width: 100%; justify-content: space-between; }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -7,15 +7,39 @@
   X-Frame-Options: DENY
   Permissions-Policy: geolocation=(), microphone=(), camera=()
   # Defence in depth behind esc()/safeUrl() in app.js. The site loads no third
-  # party anything, so this can be strict: no inline script, no remote origins.
-  # 'unsafe-inline' for style-src only — the charts set style="--c:…" on swatches.
-  Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
+  # party anything, so this is strict: no inline script, no inline style, no
+  # remote origins. Swatches are coloured by [data-series] rules in styles.css
+  # rather than style="--c:…", which is what used to force 'unsafe-inline'.
+  Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
+  # Cloudflare adds HSTS on the zone, but only if it is switched on there. Set
+  # it here too so the header does not depend on a dashboard toggle.
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
 
 # The dataset is the thing that changes. Keep it fresh but still cacheable.
 /data/*
   Cache-Control: public, max-age=300, must-revalidate
 
+# The social preview is a static PNG that only changes on a rebuild — cache it
+# hard so unfurlers do not re-fetch it constantly, but keep it under a day so a
+# refreshed card propagates without a purge.
+/og.png
+  Cache-Control: public, max-age=86400
+# Crawler-facing files: revalidate hourly so an updated sitemap/robots is picked
+# up promptly without hammering the origin.
+/sitemap.xml
+  Cache-Control: public, max-age=3600
+/robots.txt
+  Cache-Control: public, max-age=3600
+
+# Filenames are stable — there is no content hash to bust — so a long max-age
+# would strand visitors on the previous deploy's JS/CSS with no way to recover
+# until it expired. no-cache still lets the browser keep the bytes; it just has
+# to revalidate, and an unchanged file costs one 304.
 /styles.css
-  Cache-Control: public, max-age=3600
+  Cache-Control: public, no-cache
 /app.js
-  Cache-Control: public, max-age=3600
+  Cache-Control: public, no-cache
+/index.html
+  Cache-Control: public, no-cache
+/
+  Cache-Control: public, no-cache

@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# The dataset behind the page is meant to be found and reused.
+Sitemap: https://claude-resets.com/sitemap.xml
