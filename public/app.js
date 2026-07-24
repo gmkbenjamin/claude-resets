@@ -35,6 +35,11 @@ const fmtDateShort = (d) =>
   d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
 const fmtMonth = (d) =>
   d.toLocaleDateString('en-US', { month: 'short', timeZone: 'UTC' });
+/* UTC to match fmtDate — a reset's weekday must not shift with the viewer's
+   timezone, or the same post could read Thursday for one visitor and Friday
+   for another. */
+const fmtWeekday = (d) =>
+  d.toLocaleDateString('en-US', { weekday: 'long', timeZone: 'UTC' });
 
 const round1 = (n) => Math.round(n * 10) / 10;
 const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
@@ -337,7 +342,10 @@ function drawLanes(host, providers, now) {
   const end = new Date(+now + 3 * DAY);
 
   const W = host.clientWidth || 480;
-  const m = { t: 26, r: 14, b: 34, l: 66 };
+  // The lane labels ("Claude"/"Codex") need less gutter on a phone; 66px there
+  // would leave the timeline itself only ~170px.
+  const narrow = W < 420;
+  const m = { t: 26, r: 14, b: 34, l: narrow ? 52 : 66 };
   const laneGap = 62;
   const H = m.t + laneGap + m.b;
   const iw = Math.max(W - m.l - m.r, 10);
@@ -364,7 +372,7 @@ function drawLanes(host, providers, now) {
       svg.appendChild(link);
 
       const enter = () => tip.show(
-        `<div class="tip-date">${fmtDate(ev.at)}</div>` +
+        `<div class="tip-date">${esc(fmtWeekday(ev.at))}, ${fmtDate(ev.at)}</div>` +
         dotRow(key, providers[key].name, relative(ev.at, now)), cx, ly);
       link.addEventListener('pointerenter', enter);
       link.addEventListener('focus', enter);
@@ -373,16 +381,22 @@ function drawLanes(host, providers, now) {
     });
   });
 
-  // month ticks along the bottom
-  for (const mo of monthKeys(start, end)) {
-    if (mo < start) continue;
-    const t = svgEl('text', { class: 'tick-text', x: x(mo), y: H - 12, 'text-anchor': 'middle' });
-    t.textContent = fmtMonth(mo);
-    svg.appendChild(t);
+  // month ticks along the bottom. Gridlines stay every month for rhythm, but the
+  // labels are thinned when the columns get too close to read — otherwise a
+  // narrow phone renders "OcNoDeJaFe…" as the months collide.
+  const ticks = monthKeys(start, end).filter((mo) => mo >= start);
+  const stepPx = iw / Math.max(ticks.length, 1);
+  const labelEvery = Math.max(1, Math.ceil(30 / stepPx));
+  ticks.forEach((mo, i) => {
     svg.appendChild(svgEl('line', {
       class: 'grid-line', x1: x(mo), x2: x(mo), y1: m.t - 12, y2: m.t + laneGap + 12,
     }));
-  }
+    if (i % labelEvery === 0) {
+      const t = svgEl('text', { class: 'tick-text', x: x(mo), y: H - 12, 'text-anchor': 'middle' });
+      t.textContent = fmtMonth(mo);
+      svg.appendChild(t);
+    }
+  });
 
   host.appendChild(svg);
 }

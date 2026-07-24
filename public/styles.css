@@ -215,7 +215,9 @@ a:hover { text-decoration-color: currentColor; }
 /* ── Stat tiles ───────────────────────────────────────────────────────── */
 .tiles {
   display: grid; gap: 12px;
-  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  /* min(190px, 100%) so the track can shrink below 190 on a narrow phone
+     instead of forcing a column wider than the viewport (horizontal scroll). */
+  grid-template-columns: repeat(auto-fit, minmax(min(190px, 100%), 1fr));
 }
 .tile {
   background: var(--surface); border: 1px solid var(--hairline);
@@ -307,7 +309,9 @@ a:hover { text-decoration-color: currentColor; }
 /* ── Charts ───────────────────────────────────────────────────────────── */
 .chart-grid {
   display: grid; gap: 16px;
-  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  /* min(340px, 100%): two columns where there is room, one that fits the
+     viewport where there is not — never a 340px track on a 320px screen. */
+  grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr));
 }
 .chart-card figcaption { margin-bottom: 14px; }
 .chart-card h3 { margin: 0 0 5px; font-size: 1.02rem; font-weight: 620; }
@@ -419,22 +423,23 @@ code {
   .band { padding: 30px 0; }
   .sb-row { grid-template-columns: 1fr 72px 72px; gap: 8px; padding: 12px 14px; }
   .sb-val { font-size: 0.95rem; }
+  .section-head h2 { font-size: 1.3rem; }
 
-  /* This used to be `.topnav a { display: none }`, which took every link with
-     it — including Compare / Timeline / Archive, leaving phone visitors with no
-     way to reach the sections and nothing to replace them. Only the two
-     outbound links go; the in-page anchors stay and shrink to fit. */
+  /* Stack the bar: wordmark on its own row, then the section links + theme
+     toggle below. The wordmark plus the full nav do not fit one row much below
+     this width, and the old rule at ≤620 hid every link — stranding phone
+     visitors with no way to reach the sections. Here the in-page anchors stay;
+     only the two outbound links (codex-resets, Source) drop. The nav wraps, so
+     the theme toggle falls to its own line rather than overflowing when the row
+     runs out of room (≈340px and below). */
+  .topbar-inner { flex-wrap: wrap; row-gap: 8px; min-height: 0; padding: 9px 0; }
+  .wordmark { font-size: 0.98rem; }
+  .topnav {
+    width: 100%; flex-wrap: wrap; gap: 6px 3px; align-items: center;
+  }
   .topnav a.nav-ext { display: none; }
-  .topnav { gap: 0; }
-  .topnav a { padding: 7px 7px; font-size: 0.82rem; }
-  .topbar-inner { gap: 8px; }
-  .wordmark { font-size: 0.95rem; }
-}
-
-/* Below this the wordmark and four controls genuinely cannot share a row. */
-@media (max-width: 400px) {
-  .topbar-inner { flex-wrap: wrap; min-height: 0; padding-bottom: 8px; }
-  .topnav { width: 100%; justify-content: space-between; }
+  .topnav a { padding: 6px 9px; font-size: 0.85rem; }
+  .theme-switch { margin-left: auto; }   /* toggle to the right; wraps if tight */
 }
 
 @media (prefers-reduced-motion: reduce) {

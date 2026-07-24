@@ -1,8 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="reset">
   <!-- The same ↻ glyph and colour as the wordmark in the site header, so the
-       tab icon and the logo are literally the same mark. -->
-  <text x="16" y="16.8"
+       tab icon and the logo are literally the same mark. font-size stays below
+       the 32px box height — it was 41, so the glyph overran the viewBox and
+       clipped along the bottom. -->
+  <text x="16" y="16"
         text-anchor="middle" dominant-baseline="central"
         font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif"
-        font-size="41" fill="#d97757">↻</text>
+        font-size="26" fill="#d97757">↻</text>
 </svg>
