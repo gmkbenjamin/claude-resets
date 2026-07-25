@@ -233,6 +233,11 @@
       {
         "id": "2079609157934886975",
         "kind": "reset"
+      },
+      {
+        "id": "2081096447718723984",
+        "kind": "reset",
+        "note": "We have reset usage limits for all Codex and ChatGPT Work users. Last night around 2am to 4am we suffered an almost global outage. All well and recovered, but you know what comes next. We learn. We reset. Enjoy. bluedev (@blueemi99) Hey doe"
       }
     ]
   }
