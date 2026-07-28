@@ -419,6 +419,10 @@ code {
 }
 
 @media (max-width: 620px) {
+  .wrap {
+    padding-left: max(24px, env(safe-area-inset-left));
+    padding-right: max(24px, env(safe-area-inset-right));
+  }
   .hero { padding: 44px 0 32px; }
   .band { padding: 30px 0; }
   .sb-row { grid-template-columns: 1fr 72px 72px; gap: 8px; padding: 12px 14px; }
@@ -432,7 +436,7 @@ code {
      only the two outbound links (codex-resets, Source) drop. The nav wraps, so
      the theme toggle falls to its own line rather than overflowing when the row
      runs out of room (≈340px and below). */
-  .topbar-inner { flex-wrap: wrap; row-gap: 8px; min-height: 0; padding: 9px 0; }
+  .topbar-inner { flex-wrap: wrap; row-gap: 8px; min-height: 0; padding-block: 9px; }
   .wordmark { font-size: 0.98rem; }
   .topnav {
     width: 100%; flex-wrap: wrap; gap: 6px 3px; align-items: center;

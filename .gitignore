@@ -15,5 +15,6 @@ data/needs-review.json
 .DS_Store
 *.log
 scripts/auto-update.sh
+scripts/install-cron.sh
 .auto-update.lock/
 scripts/make-og.html
